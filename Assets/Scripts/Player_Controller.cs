@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class Player_Controller : MonoBehaviour
 {
-    public float speed = 4f;
+    public float speed = 10f;
     private CharacterController CController;
     float horizontalMove;
     float verticalMove;
+    public float verticalSpeed = 1f    ;
     Game_Manager manager;
+    public float gravity = -9.81f;
     public void Start()
     {
         manager = GetComponent<Game_Manager>();
@@ -16,7 +18,16 @@ public class Player_Controller : MonoBehaviour
     {
         horizontalMove = Input.GetAxis("Horizontal");
         verticalMove = Input.GetAxis("Vertical");
-        Vector3 direction = new Vector3(horizontalMove, 0, verticalMove);
+        if (CController.isGrounded == true)
+        {
+            verticalSpeed = 0;
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                verticalSpeed = 3f;
+            }
+        }
+        verticalSpeed += gravity * Time.deltaTime;
+        Vector3 direction = new Vector3(horizontalMove, verticalSpeed, verticalMove);
         CController.Move(direction * speed * Time.deltaTime);
     }
     private void OnCollisionEnter(Collision collision)
